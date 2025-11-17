@@ -1,0 +1,235 @@
+import asyncio
+import os
+from motor.motor_asyncio import AsyncIOMotorClient
+from datetime import datetime, timezone
+
+# MongoDB connection
+mongo_url = os.environ.get('MONGO_URL', 'mongodb://localhost:27017')
+db_name = os.environ.get('DB_NAME', 'test_database')
+
+client = AsyncIOMotorClient(mongo_url)
+db = client[db_name]
+
+async def seed_data():
+    print("🌱 Starting to seed data...")
+    
+    # Clear existing data
+    await db.companies.delete_many({})
+    await db.jobs.delete_many({})
+    print("✅ Cleared existing data")
+    
+    # Sample Companies
+    companies = [
+        {
+            "id": "company-1",
+            "user_id": "user-1",
+            "name": "شركة النفط الوطنية الليبية",
+            "description": "الشركة الوطنية للنفط هي شركة ليبية حكومية مسؤولة عن إدارة قطاع النفط والغاز في ليبيا",
+            "sector": "النفط والغاز",
+            "city": "طرابلس",
+            "website": "https://noc.ly",
+            "company_type": "حكومية",
+            "employee_count": "5000+",
+            "followers_count": 1250,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        },
+        {
+            "id": "company-2",
+            "user_id": "user-2",
+            "name": "مصرف ليبيا المركزي",
+            "description": "البنك المركزي في ليبيا المسؤول عن السياسة النقدية والإشراف على القطاع المصرفي",
+            "sector": "المحاسبة والمالية",
+            "city": "طرابلس",
+            "website": "https://cbl.gov.ly",
+            "company_type": "حكومية",
+            "employee_count": "1000+",
+            "followers_count": 850,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        },
+        {
+            "id": "company-3",
+            "user_id": "user-3",
+            "name": "ليبيا للاتصالات والتقنية",
+            "description": "شركة رائدة في مجال الاتصالات وتقنية المعلومات في ليبيا",
+            "sector": "التقنية والبرمجة",
+            "city": "بنغازي",
+            "website": "https://ltt.ly",
+            "company_type": "خاصة",
+            "employee_count": "500-1000",
+            "followers_count": 620,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        },
+        {
+            "id": "company-4",
+            "user_id": "user-4",
+            "name": "مستشفى طرابلس المركزي",
+            "description": "أكبر مستشفى في ليبيا يقدم خدمات صحية شاملة",
+            "sector": "الصحة",
+            "city": "طرابلس",
+            "company_type": "حكومية",
+            "employee_count": "2000+",
+            "followers_count": 950,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        },
+        {
+            "id": "company-5",
+            "user_id": "user-5",
+            "name": "شركة المدار الجديد",
+            "description": "شركة اتصالات رائدة تقدم خدمات الهاتف المحمول والإنترنت",
+            "sector": "التقنية والبرمجة",
+            "city": "مصراتة",
+            "website": "https://almadar.ly",
+            "company_type": "خاصة",
+            "employee_count": "1000-2000",
+            "followers_count": 1100,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        },
+        {
+            "id": "company-6",
+            "user_id": "user-6",
+            "name": "جامعة طرابلس",
+            "description": "جامعة حكومية رائدة في ليبيا تقدم برامج تعليمية متنوعة",
+            "sector": "التعليم",
+            "city": "طرابلس",
+            "website": "https://uot.edu.ly",
+            "company_type": "حكومية",
+            "employee_count": "3000+",
+            "followers_count": 1500,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+    ]
+    
+    await db.companies.insert_many(companies)
+    print(f"✅ Added {len(companies)} companies")
+    
+    # Sample Jobs
+    jobs = [
+        {
+            "id": "job-1",
+            "company_id": "company-1",
+            "title": "مهندس نفط",
+            "description": "نبحث عن مهندس نفط ذو خبرة للعمل في مشاريع الاستكشاف والإنتاج. المسؤوليات تشمل التخطيط والإشراف على عمليات الحفر والإنتاج.",
+            "requirements": "- شهادة بكالوريوس في هندسة النفط\n- خبرة لا تقل عن 3 سنوات\n- إجادة اللغة الإنجليزية",
+            "job_type": "دوام كامل",
+            "experience_level": "متوسط",
+            "city": "طرابلس",
+            "sector": "النفط والغاز",
+            "salary_range": "3000-5000 دينار",
+            "is_active": True,
+            "applications_count": 45,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        },
+        {
+            "id": "job-2",
+            "company_id": "company-2",
+            "title": "محاسب مالي",
+            "description": "مطلوب محاسب مالي للعمل في قسم المحاسبة. المسؤوليات تشمل إعداد التقارير المالية وإدارة الحسابات.",
+            "requirements": "- شهادة بكالوريوس في المحاسبة\n- خبرة 2-3 سنوات\n- معرفة ببرامج المحاسبة",
+            "job_type": "دوام كامل",
+            "experience_level": "متوسط",
+            "city": "طرابلس",
+            "sector": "المحاسبة والمالية",
+            "salary_range": "2000-3000 دينار",
+            "is_active": True,
+            "applications_count": 67,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        },
+        {
+            "id": "job-3",
+            "company_id": "company-3",
+            "title": "مطور برمجيات Full Stack",
+            "description": "نبحث عن مطور برمجيات متمكن في React و Node.js للعمل على مشاريع تطوير تطبيقات الويب.",
+            "requirements": "- خبرة في React, Node.js, MongoDB\n- معرفة بـ Git و REST APIs\n- القدرة على العمل ضمن فريق",
+            "job_type": "دوام كامل",
+            "experience_level": "متوسط",
+            "city": "بنغازي",
+            "sector": "التقنية والبرمجة",
+            "salary_range": "2500-4000 دينار",
+            "is_active": True,
+            "applications_count": 89,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        },
+        {
+            "id": "job-4",
+            "company_id": "company-4",
+            "title": "ممرض/ممرضة",
+            "description": "مطلوب ممرضين وممرضات للعمل في قسم الطوارئ. يجب أن يكون لديهم خبرة في التعامل مع الحالات الحرجة.",
+            "requirements": "- شهادة تمريض معتمدة\n- خبرة سنتين على الأقل\n- القدرة على العمل تحت الضغط",
+            "job_type": "دوام كامل",
+            "experience_level": "مبتدئ",
+            "city": "طرابلس",
+            "sector": "الصحة",
+            "salary_range": "1500-2500 دينار",
+            "is_active": True,
+            "applications_count": 112,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        },
+        {
+            "id": "job-5",
+            "company_id": "company-5",
+            "title": "مهندس شبكات",
+            "description": "مطلوب مهندس شبكات للعمل على تصميم وصيانة البنية التحتية للشبكات.",
+            "requirements": "- شهادة في هندسة الحاسوب أو الشبكات\n- شهادات CCNA أو CCNP\n- خبرة 3-5 سنوات",
+            "job_type": "دوام كامل",
+            "experience_level": "خبير",
+            "city": "مصراتة",
+            "sector": "التقنية والبرمجة",
+            "salary_range": "3000-4500 دينار",
+            "is_active": True,
+            "applications_count": 34,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        },
+        {
+            "id": "job-6",
+            "company_id": "company-6",
+            "title": "أستاذ جامعي - علوم الحاسوب",
+            "description": "مطلوب أستاذ جامعي في قسم علوم الحاسوب للتدريس والإشراف على الأبحاث.",
+            "requirements": "- درجة الدكتوراه في علوم الحاسوب\n- خبرة في التدريس الجامعي\n- منشورات بحثية",
+            "job_type": "دوام كامل",
+            "experience_level": "محترف",
+            "city": "طرابلس",
+            "sector": "التعليم",
+            "salary_range": "4000-6000 دينار",
+            "is_active": True,
+            "applications_count": 23,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        },
+        {
+            "id": "job-7",
+            "company_id": "company-3",
+            "title": "مصمم UI/UX",
+            "description": "نبحث عن مصمم واجهات مستخدم لتصميم تطبيقات جوال وويب حديثة.",
+            "requirements": "- خبرة في Figma و Adobe XD\n- معرفة بمبادئ تجربة المستخدم\n- Portfolio قوي",
+            "job_type": "دوام جزئي",
+            "experience_level": "مبتدئ",
+            "city": "بنغازي",
+            "sector": "التقنية والبرمجة",
+            "salary_range": "1500-2500 دينار",
+            "is_active": True,
+            "applications_count": 56,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        },
+        {
+            "id": "job-8",
+            "company_id": "company-1",
+            "title": "متدرب هندسة",
+            "description": "برنامج تدريبي لطلاب الهندسة في مجال النفط والغاز. مدة التدريب 6 أشهر.",
+            "requirements": "- طالب في السنة الأخيرة من الهندسة\n- معدل تراكمي جيد\n- رغبة في التعلم",
+            "job_type": "تدريب",
+            "experience_level": "مبتدئ",
+            "city": "طرابلس",
+            "sector": "النفط والغاز",
+            "salary_range": "500-1000 دينار",
+            "is_active": True,
+            "applications_count": 156,
+            "created_at": datetime.now(timezone.utc).isoformat()
+        }
+    ]
+    
+    await db.jobs.insert_many(jobs)
+    print(f"✅ Added {len(jobs)} jobs")
+    
+    print("🎉 Data seeding completed successfully!")
+
+if __name__ == "__main__":
+    asyncio.run(seed_data())
